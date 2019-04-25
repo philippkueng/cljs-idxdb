@@ -96,7 +96,7 @@
   - :error"
   [db store-name item]
   (let [item (clj->js item)]
-    (do-read-write-store-action db store-name #(. % (put item)))))
+    (do-read-write-store-action db store-name (fn [store] (. store (put item))))))
 
 (defn remove-item
   "Remove the item from the given store that matches the item-key value.
