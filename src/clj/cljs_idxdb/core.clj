@@ -15,6 +15,16 @@
     (set! (.-onerror request#) (cljs-idxdb.core/handle-callback-chan db-callback-chan# request# :error))
     [request# publication-chan#]))
 
+(defmacro delete-db
+  ""
+  [name db]
+  `(let [db-callback-chan# (cljs.core.async/chan)
+         publication-chan# (cljs.core.async/pub db-callback-chan# :topic)
+         _# (.close ~db)
+         request# (.deleteDatabase js/indexedDB ~name)]
+     (set! (.-onsuccess request#) (cljs-idxdb.core/handle-callback-chan db-callback-chan# request# :success))
+     (set! (.-onerror request#) (cljs-idxdb.core/handle-callback-chan db-callback-chan# request# :error))
+     [request# publication-chan#]))
 
 (defmacro docursor
   "Like doseq, but iterates over the bound cursor.
